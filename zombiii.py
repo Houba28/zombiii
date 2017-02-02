@@ -21,7 +21,7 @@ def draw_bullet(bullet, X, Y):
     pygame.draw.line(window, bullet.color, (bullet.x, bullet.y), (X + bullet.x_end, Y + bullet.y_end), 2)
 
 def draw_enemy(enemy):
-    pygame.draw.circle(window, enemy.color, (math.ceil(enemy.x), math.ceil(enemy.y)), 20 ,1)
+    pygame.draw.circle(window, enemy.color, (math.ceil(enemy.x), math.ceil(enemy.y)), 20 ,4)
 
 def update_game():
     window.fill((0,0,0))
@@ -81,10 +81,6 @@ def show_menu(game, name, items, chosen):
         else:
             drawing.print_text(window, item, ((game.screen_x-(len(item)*size))/2,((game.screen_y)/2-name_size-(len(items)*(size+space))+space)+name_size+space*2+ (size+space)*idx), thickness, size, color)
 
-def menu_item(game, name):
-    pass
-
-
 def pause_game(game, enemy_time,pause):
     time = GAME_TIME.get_ticks() - enemy_time
     chosen = 0
@@ -100,8 +96,7 @@ def pause_game(game, enemy_time,pause):
                     pause = False;
                     enemy_time = (GAME_TIME.get_ticks() + time)
                 if event.key == pygame.K_RETURN:
-                    if menu_item(game, menu[chosen]):
-                        break
+                    pass
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
                     chosen +=1

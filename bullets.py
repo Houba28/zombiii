@@ -1,3 +1,5 @@
+from math import sqrt
+
 class Bullet():
 	def __init__(self, plus_x, plus_y, x, y):
 		self.x = x
@@ -10,6 +12,10 @@ class Bullet():
 		self.length = 5
 		self.correcture = 0
 		self.color = (50,200,0)
+
+	def distance_to(self, target):
+		vector = (self.x - target.x, self.y - target.y)
+		return abs(sqrt(vector[0]*vector[0]+vector[1]*vector[1]))
 
 	def move(self):
 		self.x += self.x_speed

@@ -33,16 +33,14 @@ class player:
         self.bullets.append(bullets.Bullet(-(self.top_x*self.bul_c), -(self.top_y*self.bul_c), x+(self.top_x*self.top_c), y+(self.top_y*self.top_c)))
 
     def check_enemy_hit(self, enemy):
-        bullets_to_remove = []
         death = False
         for idx, b in enumerate(self.bullets):
             if b.x > self.game.screen_x+900  or b.x < -900 or b.y > self.game.screen_y +900 or b.y < -900:
                 del self.bullets[idx]
                 next
-            elif b.x > enemy.x and b.x < enemy.x + enemy.width:
-                if b.y > enemy.y and b.y < enemy.y + enemy.height:
-                    death = enemy.register_hit()
-                    del self.bullets[idx]
+            elif b.distance_to(enemy) < 20:
+                death = enemy.register_hit()
+                del self.bullets[idx]
 
         return death
 
