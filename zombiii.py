@@ -28,7 +28,7 @@ def draw_bullet(bullet, X, Y):
 def draw_enemy(enemy):
     pygame.draw.circle(window, enemy.color, (math.ceil(enemy.x), math.ceil(enemy.y)), 20 ,4)
 
-def update_game(game, enemy_list):
+def update_game():
     window.fill((0,0,0))
     time = GAME_TIME.get_ticks()
     draw_player(player, game.screen_x/2, game.screen_y/2)
@@ -37,17 +37,17 @@ def update_game(game, enemy_list):
         bullet.move()
         draw_bullet(bullet, game.screen_x/2, game.screen_y/2)
 
-    for idx, zombi in enumerate(enemy_list):
+    for idx, zombi in enumerate(game.enemies):
         zombi.move(player, time)
         zombi.check_player_reachable(50, player, time)
         draw_enemy(zombi)
         if player.check_enemy_hit(zombi):
-            del enemy_list[idx]
+            del game.enemies[idx]
     game.level = int(game.score/(game.level*10) + 1)
     if game.level > game.max_level:
         game.level = game.max_level
 
-def show_HUD(player, game):
+def show_HUD():
     #score
     size = 30
     color = (255,255,255)
@@ -76,7 +76,7 @@ def show_settings():
 def show_scores():
     pass
 
-def show_menu(game, name, items):
+def show_menu(name, items):
     space = 10
     name_color = (0,255,0)
     name_thickness = 8
@@ -127,10 +127,10 @@ def show_menu(game, name, items):
 
 
 
-def pause_game(game, enemy_time,pause):
+def pause_game(enemy_time,pause):
     time = GAME_TIME.get_ticks() - enemy_time
     menu = [{"label":"return", "callback":lambda: None },{"label":"settings", "callback":show_settings},{"label":"high score", "callback":show_scores},{"label":"exit", "callback":exit_game}]
-    show_menu(game, "PAUSE", menu)
+    show_menu( "PAUSE", menu)
     enemy_time = (GAME_TIME.get_ticks() + time)
 
 def classic():
@@ -146,7 +146,7 @@ def survival():
     show_dev = False
     while True:
         gameStarted = True
-        update_game(game, game.enemies)
+        update_game()
 
         if (GAME_TIME.get_ticks() - last_enemy_ctime > game.intervals[int(game.level)-1]) and (gameStarted is True):
             game.enemies.append( enemy.enemy(game) )
@@ -186,7 +186,7 @@ def survival():
             break
         clock.tick(60)
         
-        show_HUD(player, game)
+        show_HUD()
 
         pygame.display.update()
 
@@ -197,6 +197,10 @@ if __name__ == "__main__":
     global player
     player = player(game)
     pygame.init()
+    icon_path = os.path.join( os.getcwd() ,'assets','zombiii.ico')
+    print(icon_path)
+    icon = pygame.image.load(icon_path)
+    pygame.display.set_icon(icon)
     pygame.display.set_caption('Zombiii')
     clock = pygame.time.Clock()
     window = pygame.display.set_mode((game.screen_x,game.screen_y))
@@ -207,5 +211,5 @@ if __name__ == "__main__":
     
 
     menu = [{"label":"Classic game", "callback":classic },{"label":"Survival game", "callback":survival },{"label":"settings", "callback":show_settings},{"label":"high score", "callback":show_scores},{"label":"exit", "callback":exit_game}]
-    show_menu(game, "ZOMBIII", menu)
+    show_menu("ZOMBIII", menu)
     

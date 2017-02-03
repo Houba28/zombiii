@@ -5,6 +5,7 @@ import os
 
 class player:
     def __init__(self, game):
+        pygame.init()
         self.game = game
         self.top_x = -40
         self.top_y = -40
@@ -29,12 +30,12 @@ class player:
         self.right_rotate(self.right_rot * (pi/180))
         self.bullets = []
         self.color = (50,200,0)
-        #self.laser = pygame.mixer.Sound(os.path.join(os.getcwd(),'assets/laser.ogg'))
+        self.laser = pygame.mixer.Sound(os.path.join(os.getcwd(),'assets','laser.ogg'))
         
     def shoot(self, x, y):
         self.bul_c = 10/sqrt((self.top_x*self.top_x)+(self.top_y*self.top_y))
         self.bullets.append(bullets.Bullet(-(self.top_x*self.bul_c), -(self.top_y*self.bul_c), x+(self.top_x*self.top_c), y+(self.top_y*self.top_c)))
-        #self.laser.play()
+        self.laser.play()
 
     def check_enemy_hit(self, enemy):
         death = False
