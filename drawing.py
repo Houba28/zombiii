@@ -41,7 +41,7 @@ def print_letter(window, letter, position, thickness, size, color):
 		"9":[(position[0]+(2*size/8), position[1]+(size)),(position[0]+(6*size/8), position[1]+(size)),(position[0]+(7*size/8), position[1]+(7*size/8)),(position[0]+(7*size/8), position[1]+(2*size/8)),(position[0]+(6*size/8), position[1]),(position[0]+(2*size/8), position[1]),(position[0]+(size/8), position[1]+(1*size/8)),(position[0]+(size/8), position[1]+(3*size/8)),(position[0]+(2*size/8), position[1]+(4*size/8)),(position[0]+(7*size/8), position[1]+(4*size/8))],
 	}
 	
-	pygame.draw.lines(window,color, False, letters[letter], thickness)
+	pygame.draw.aalines(window,color, False, letters[letter], thickness)
 
 def print_symbol(window, symbol, position, thickness, size, color):
 	symbols = {
@@ -54,7 +54,7 @@ def print_symbol(window, symbol, position, thickness, size, color):
 		
 	if symbol != " ":
 		for i in range(len(symbols[symbol])):
-			pygame.draw.lines(window,color, False, symbols[symbol][i], thickness)
+			pygame.draw.aalines(window,color, False, symbols[symbol][i], thickness)
 		
 
 def print_text(window, text, position, thickness, size, color):

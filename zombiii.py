@@ -10,16 +10,20 @@ from time import sleep
 import drawing
 import os
 
+def exit_game():
+    pygame.quit()
+    sys.exit()
+
 def draw_player(player, X, Y):  
     #pygame.draw.line(window,(50,200,0),(X,Y),(X+(player.left_x*player.left_c),Y+(player.left_y*player.left_c)),1)
     #pygame.draw.line(window,(50,200,0),(X,Y),(X+(player.top_x*player.top_c),Y+(player.top_y*player.top_c)),1)
     #pygame.draw.line(window,(50,200,0),(X,Y), (X+(player.right_x*player.right_c),Y+(player.right_y*player.right_c)),1)
-    pygame.draw.lines(window,player.color, True, ((X+(player.left_x*player.left_c),Y+(player.left_y*player.left_c)), 
+    pygame.draw.aalines(window,player.color, True, ((X+(player.left_x*player.left_c),Y+(player.left_y*player.left_c)), 
                                                 (X+(player.top_x*player.top_c),Y+(player.top_y*player.top_c)),
                                                 (X+(player.right_x*player.right_c),Y+(player.right_y*player.right_c))), 2)
 
 def draw_bullet(bullet, X, Y):
-    pygame.draw.line(window, bullet.color, (bullet.x, bullet.y), (X + bullet.x_end, Y + bullet.y_end), 2)
+    pygame.draw.aaline(window, bullet.color, (bullet.x, bullet.y), (X + bullet.x_end, Y + bullet.y_end), 2)
 
 def draw_enemy(enemy):
     pygame.draw.circle(window, enemy.color, (math.ceil(enemy.x), math.ceil(enemy.y)), 20 ,4)
@@ -52,7 +56,7 @@ def show_HUD(player, game):
     drawing.print_text(window, str(game.score), (space,space), thickness, size, color)
     # lives
     for live in range(player.lives):
-        pygame.draw.lines(window,(255,0,0), True, [(5+space+(30+space)*live,0+(game.screen_y-space-30)),((10+space)+(30+space)*live,0+(game.screen_y-space-30)),
+        pygame.draw.aalines(window,(255,0,0), True, [(5+space+(30+space)*live,0+(game.screen_y-space-30)),((10+space)+(30+space)*live,0+(game.screen_y-space-30)),
             ((15+space)+(30+space)*live,5+(game.screen_y-space-30)),((20+space)+(30+space)*live,0+(game.screen_y-space-30)),((25+space)+(30+space)*live,0+(game.screen_y-space-30)),
             ((30+space)+(30+space)*live,5+(game.screen_y-space-30)),((30+space)+(30+space)*live,10+(game.screen_y-space-30)),((15+space)+(30+space)*live,25+(game.screen_y-space-30)),
             ((0+space)+(30+space)*live,10+(game.screen_y-space-30)),((0+space)+(30+space)*live,5+(game.screen_y-space-30))], thickness)
@@ -66,9 +70,13 @@ def show_HUD(player, game):
         drawing.print_text(window, "LIVES: "+str(player.lives), (space,game.screen_y-(size+space)*2), thickness, size, color)
         drawing.print_text(window, "LEVEL: "+str(game.level)+"TIME: "+str(game.intervals[game.level]), (space,(size+space)*2), thickness, size, color)
 
+def show_settings():
+    pass
 
+def show_scores():
+    pass
 
-def show_menu(game, name, items, chosen):
+def show_menu(game, name, items):
     space = 10
     name_color = (0,255,0)
     name_thickness = 8
@@ -78,39 +86,37 @@ def show_menu(game, name, items, chosen):
     chosen_color = (20,255,20)
     chosen_thickness = 4
     thickness = 3
-    drawing.print_text(window, name, ((game.screen_x-(len(name)*name_size))/2,((game.screen_y)/2-name_size-(len(items)*(size+space)-space))), name_thickness, name_size, name_color)
-
-    for idx, item in enumerate(items):
-        if idx == chosen:
-            drawing.print_text(window, item, ((game.screen_x-(len(item)*size))/2,((game.screen_y)/2-name_size-(len(items)*(size+space))+space)+name_size+space*2+ (size+space)*idx), chosen_thickness, size, chosen_color)
-        else:
-            drawing.print_text(window, item, ((game.screen_x-(len(item)*size))/2,((game.screen_y)/2-name_size-(len(items)*(size+space))+space)+name_size+space*2+ (size+space)*idx), thickness, size, color)
-
-def pause_game(game, enemy_time,pause):
-    time = GAME_TIME.get_ticks() - enemy_time
     chosen = 0
-    menu = ["return", "settings" , "score", "quit"]
-    while pause:
+
+    while True:
         window.fill((0,0,0))
-       
-        show_menu(game, "PAUSE", menu, chosen)
+        drawing.print_text(window, name, ((game.screen_x-(len(name)*name_size))/2,((game.screen_y)/2-name_size-(len(items)*(size+space)-space))), name_thickness, name_size, name_color)
+
+        for idx, item in enumerate(items):
+            if idx == chosen:
+                drawing.print_text(window, item["label"], ((game.screen_x-(len(item["label"])*size))/2,((game.screen_y)/2-name_size-(len(items)*(size+space))+space)+name_size+space*2+ (size+space)*idx), chosen_thickness, size, chosen_color)
+            else:
+                drawing.print_text(window, item["label"], ((game.screen_x-(len(item["label"])*size))/2,((game.screen_y)/2-name_size-(len(items)*(size+space))+space)+name_size+space*2+ (size+space)*idx), thickness, size, color)
 
         for event in GAME_EVENTS.get():    
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_ESCAPE:
-                    pause = False;
-                    enemy_time = (GAME_TIME.get_ticks() + time)
+                    return
                 if event.key == pygame.K_RETURN:
-                    pass
+                    if chosen > 0:
+                        items[chosen]["callback"]()
+                    else:
+                        return
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
                     chosen +=1
-                    if chosen >= len(menu):
+                    if chosen >= len(items):
                         chosen = 0
                 if event.key == pygame.K_UP:
                     chosen -= 1
                     if chosen < 0:
-                        chosen = len(menu)-1
+                        chosen = len(items)-1
 
             if event.type == GAME_GLOBALS.QUIT:
                     pygame.quit()
@@ -119,7 +125,18 @@ def pause_game(game, enemy_time,pause):
         clock.tick(60)
         pygame.display.update()
 
-def survival(player, game):
+
+
+def pause_game(game, enemy_time,pause):
+    time = GAME_TIME.get_ticks() - enemy_time
+    menu = [{"label":"return", "callback":lambda: None },{"label":"settings", "callback":show_settings},{"label":"high score", "callback":show_scores},{"label":"exit", "callback":exit_game}]
+    show_menu(game, "PAUSE", menu)
+    enemy_time = (GAME_TIME.get_ticks() + time)
+
+def classic():
+    pass
+
+def survival():
     player.rotate((45+180)*(math.pi/180))
     last_enemy_ctime = 0
     gameStarted = False
@@ -142,8 +159,7 @@ def survival(player, game):
 
         for event in GAME_EVENTS.get():
             if event.type == GAME_GLOBALS.QUIT:
-                pygame.quit()
-                sys.exit()
+               exit_game()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pause = True
@@ -176,7 +192,10 @@ def survival(player, game):
 
 
 if __name__ == "__main__":
+    global game
     game = game.game()
+    global player
+    player = player(game)
     pygame.init()
     pygame.display.set_caption('Zombiii')
     clock = pygame.time.Clock()
@@ -185,5 +204,8 @@ if __name__ == "__main__":
     pygame.mixer.init()
     # pygame.mixer.music.load(os.path.join(os.getcwd(),'assets/music.ogg'))
     # pygame.mixer.music.play(-1)
-    player = player(game)
-    survival(player, game)
+    
+
+    menu = [{"label":"Classic game", "callback":classic },{"label":"Survival game", "callback":survival },{"label":"settings", "callback":show_settings},{"label":"high score", "callback":show_scores},{"label":"exit", "callback":exit_game}]
+    show_menu(game, "ZOMBIII", menu)
+    
