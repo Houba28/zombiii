@@ -8,6 +8,7 @@ import game
 import math
 from time import sleep
 import drawing
+import os
 
 def draw_player(player, X, Y):  
     #pygame.draw.line(window,(50,200,0),(X,Y),(X+(player.left_x*player.left_c),Y+(player.left_y*player.left_c)),1)
@@ -23,7 +24,7 @@ def draw_bullet(bullet, X, Y):
 def draw_enemy(enemy):
     pygame.draw.circle(window, enemy.color, (math.ceil(enemy.x), math.ceil(enemy.y)), 20 ,4)
 
-def update_game():
+def update_game(game, enemy_list):
     window.fill((0,0,0))
     time = GAME_TIME.get_ticks()
     draw_player(player, game.screen_x/2, game.screen_y/2)
@@ -32,12 +33,15 @@ def update_game():
         bullet.move()
         draw_bullet(bullet, game.screen_x/2, game.screen_y/2)
 
-    for idx, zombi in enumerate(enemies):
+    for idx, zombi in enumerate(enemy_list):
         zombi.move(player, time)
         zombi.check_player_reachable(50, player, time)
         draw_enemy(zombi)
         if player.check_enemy_hit(zombi):
-            del enemies[idx]
+            del enemy_list[idx]
+    game.level = int(game.score/(game.level*10) + 1)
+    if game.level > game.max_level:
+        game.level = game.max_level
 
 def show_HUD(player, game):
     #score
@@ -53,13 +57,14 @@ def show_HUD(player, game):
             ((30+space)+(30+space)*live,5+(game.screen_y-space-30)),((30+space)+(30+space)*live,10+(game.screen_y-space-30)),((15+space)+(30+space)*live,25+(game.screen_y-space-30)),
             ((0+space)+(30+space)*live,10+(game.screen_y-space-30)),((0+space)+(30+space)*live,5+(game.screen_y-space-30))], thickness)
     # developer
-    if(show_dev):
-        enemies_cnt = str(len(enemies))
+    if(game.show_dev):
+        enemies_cnt = str(len(game.enemies))
         bullets_cnt = str(len(player.bullets))
         drawing.print_text(window, "ENEMIES: "+enemies_cnt, (game.screen_x - size*(15) + space,10), thickness, size, color)
         drawing.print_text(window, "BULLETS: "+bullets_cnt, (game.screen_x - size*(15) + space,10+size+space), thickness, size, color)
         drawing.print_text(window, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,.!:?", (space,game.screen_y-(size+space)*3), thickness, size, color)
         drawing.print_text(window, "LIVES: "+str(player.lives), (space,game.screen_y-(size+space)*2), thickness, size, color)
+        drawing.print_text(window, "LEVEL: "+str(game.level)+"TIME: "+str(game.intervals[game.level]), (space,(size+space)*2), thickness, size, color)
 
 
 
@@ -114,30 +119,20 @@ def pause_game(game, enemy_time,pause):
         clock.tick(60)
         pygame.display.update()
 
-if __name__ == "__main__":
-    game = game.game()
-    pygame.init()
-    clock = pygame.time.Clock()
-    window = pygame.display.set_mode((game.screen_x,game.screen_y))
-    player = player(game)
+def survival(player, game):
     player.rotate((45+180)*(math.pi/180))
-    enemies = []
-    level = 1
-    intervals = [2000]
     last_enemy_ctime = 0
     gameStarted = False
     pause = False
     left = False
     right = False
-    shoot = False
-    gameStarted = True
     show_dev = False
     while True:
-        
-        update_game()
+        gameStarted = True
+        update_game(game, game.enemies)
 
-        if (GAME_TIME.get_ticks() - last_enemy_ctime > intervals[level-1]) and (gameStarted is True):
-            enemies.append( enemy.enemy(game) )
+        if (GAME_TIME.get_ticks() - last_enemy_ctime > game.intervals[int(game.level)-1]) and (gameStarted is True):
+            game.enemies.append( enemy.enemy(game) )
             last_enemy_ctime= GAME_TIME.get_ticks()
         
         if left:
@@ -166,10 +161,10 @@ if __name__ == "__main__":
                 if event.key == pygame.K_RIGHT:
                     right = False
                 if event.key == pygame.K_SEMICOLON:
-                    if show_dev:
-                        show_dev = False
+                    if game.show_dev:
+                        game.show_dev = False
                     else:
-                        show_dev = True
+                        game.show_dev = True
         if player.lives == 0:
             #save score,etc 
             break
@@ -178,3 +173,17 @@ if __name__ == "__main__":
         show_HUD(player, game)
 
         pygame.display.update()
+
+
+if __name__ == "__main__":
+    game = game.game()
+    pygame.init()
+    pygame.display.set_caption('Zombiii')
+    clock = pygame.time.Clock()
+    window = pygame.display.set_mode((game.screen_x,game.screen_y))
+    volume = 1.0
+    pygame.mixer.init()
+    # pygame.mixer.music.load(os.path.join(os.getcwd(),'assets/music.ogg'))
+    # pygame.mixer.music.play(-1)
+    player = player(game)
+    survival(player, game)

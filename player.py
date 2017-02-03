@@ -1,5 +1,6 @@
 from math import sin, cos, pi, sqrt
 import bullets
+import pygame
 
 class player:
     def __init__(self, game):
@@ -27,10 +28,12 @@ class player:
         self.right_rotate(self.right_rot * (pi/180))
         self.bullets = []
         self.color = (50,200,0)
-
+        self.laser = pygame.mixer.Sound('assets/laser.ogg')
+        
     def shoot(self, x, y):
         self.bul_c = 10/sqrt((self.top_x*self.top_x)+(self.top_y*self.top_y))
         self.bullets.append(bullets.Bullet(-(self.top_x*self.bul_c), -(self.top_y*self.bul_c), x+(self.top_x*self.top_c), y+(self.top_y*self.top_c)))
+        self.laser.play()
 
     def check_enemy_hit(self, enemy):
         death = False
