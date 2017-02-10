@@ -20,7 +20,7 @@ class player:
         self.left_rot = 50
         self.right_rot = -10
         self.gun = 0
-        self.lives = 10
+        self.lives = 2
         self.rotation_D = 2
         self.deg_rotation = 0
         self.left_deg_rotation = 0

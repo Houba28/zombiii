@@ -48,6 +48,7 @@ def print_symbol(window, symbol, position, thickness, size, color):
 		"!":[[(position[0]+(4*size/8), position[1]),(position[0]+(4*size/8), position[1]+(6*size/8))],[(position[0]+(4*size/8), position[1]+(size)),(position[0]+(11*size/20), position[1]+(size)),(position[0]+(9*size/20), position[1]+(size)),] ],
 		":":[[(position[0]+(4*size/8), position[1]+(size)),(position[0]+(11*size/20), position[1]+(size)),(position[0]+(9*size/20), position[1]+(size)),] ,[(position[0]+(11*size/20), position[1]+(size/2)),(position[0]+(9*size/20), position[1]+(size/2)),(position[0]+(4*size/8), position[1]+(size/2)),] ],
 		"?":[],
+		"_":[[(position[0]+(size/8), position[1]+(size)),(position[0]+(7*size/8), position[1]+(size))]],
 		".":[[(position[0]+(4*size/8), position[1]+(size)),(position[0]+(11*size/20), position[1]+(size)),(position[0]+(9*size/20), position[1]+(size)),]],
 		",":[[(position[0]+(4*size/8), position[1]+(size)),(position[0]+(size/2), position[1]+(10*size/8)),(position[0]+(size/2), position[1]+(size)),]],
 	}
@@ -59,7 +60,7 @@ def print_symbol(window, symbol, position, thickness, size, color):
 
 def print_text(window, text, position, thickness, size, color):
 	space = size/8
-	symbolstr = "!:? .,"
+	symbolstr = "!_:? .,"
 	for idx, letter in enumerate(text):
 		if letter in symbolstr:
 			print_symbol(window, letter, (position[0]+idx*(size+space),position[1]),thickness,size, color)
