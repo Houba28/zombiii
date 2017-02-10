@@ -1,6 +1,6 @@
 import os
 
-    
+
 def decode(string, shift):
     decoded = ""
     for symbol in string:
@@ -17,6 +17,11 @@ def encode(string, shift):
 
 def read_score():
     scores = []
+    try:
+        with open("score.bin", "x") as f:
+            pass
+    except:
+        pass
     with open("score.bin", "r") as f:
         for line in f:
             decoded = decode(line[:-1], 5).split()
