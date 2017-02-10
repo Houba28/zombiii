@@ -67,7 +67,7 @@ def show_HUD():
         bullets_cnt = str(len(player.bullets))
         drawing.print_text(window, "ENEMIES: "+enemies_cnt, (game.screen_x - size*(15) + space,10), thickness, size, color)
         drawing.print_text(window, "BULLETS: "+bullets_cnt, (game.screen_x - size*(15) + space,10+size+space), thickness, size, color)
-        drawing.print_text(window, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,.!:?", (space,game.screen_y-(size+space)*3), thickness, size/2, color)
+        drawing.print_text(window, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,_.!:?", (space,game.screen_y-(size+space)*3), thickness, size/2, color)
         drawing.print_text(window, "LIVES: "+str(player.lives), (space,game.screen_y-(size+space)*2), thickness, size, color)
         drawing.print_text(window, "LEVEL: "+str(game.level)+"TIME: "+str(game.intervals[game.level]), (space,(size+space)*2), thickness, size, color)
 
@@ -87,7 +87,7 @@ def get_nick():
         drawing.print_text(window, "You died. Score: "+str(game.score), (game.screen_x/2 -((space + len("You died. Score: "+str(game.score)))*size)/2,(game.screen_y)/4 ), name_thickness, size, (0,255,0))
         drawing.print_text(window, "Enter your name", (game.screen_x/2 -((space + len("Enter your name"))*size)/2,(game.screen_y)/4+ size+space), name_thickness, size, (0,255,0))
         drawing.print_text(window, nick, (game.screen_x/2- (size * 7), (game.screen_y+size)/2), thickness, size, color)
-        drawing.print_text(window, "_", (game.screen_x/2- (size * 7) + (size)*len(nick), (game.screen_y+size)/2), thickness, size, color)
+        drawing.print_text(window, "_", (game.screen_x/2- (size * 7) + (9*size/8)*len(nick), (game.screen_y+size)/2), thickness, size, color)
         for event in GAME_EVENTS.get():
             if event.type == pygame.KEYUP:
                 if event.key < 123 and event.key > 96:
@@ -271,7 +271,7 @@ if __name__ == "__main__":
     # global player
     # player = player(game)
     pygame.init()
-    icon_path = os.path.join( os.getcwd() ,'assets','zombiii.ico')
+    icon_path = os.path.join(os.getcwd(), 'assets','zombiii.ico')
     icon = pygame.image.load(icon_path)
     pygame.display.set_icon(icon)
     pygame.display.set_caption('Zombiii')
