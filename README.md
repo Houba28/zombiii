@@ -1,3 +1,3 @@
 # zombiii
 little game created with pygame
-![My image](Houba28.github.com/zombiii/blob/master/assets/screenshot.png!)
+![My image](https://github.com/Houba28/zombiii/blob/master/assets/screenshot.png)
