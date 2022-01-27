@@ -25,7 +25,7 @@ def draw_player(player):
 
 
 def draw_bullet(bullet):
-    pygame.draw.aaline(window, bullet.color, (bullet.x, bullet.y), (bullet.x_end, bullet.y_end), 2)
+    pygame.draw.line(window, bullet.color, (bullet.x, bullet.y), (bullet.x_end, bullet.y_end), 4)
 
 
 def draw_enemy(enemy):

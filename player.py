@@ -36,7 +36,7 @@ class Player:
     def shoot(self):
         self.bul_c = 10 / sqrt((self.top_x * self.top_x) + (self.top_y * self.top_y))
         self.bullets.append(
-            bullets.Bullet(self.get_deg_rotation(), self.x + (self.top_x * self.top_c),
+            bullets.Bullet(self.rotation, self.x + (self.top_x * self.top_c),
                            self.y + (self.top_y * self.top_c)))
         self.laser.play()
 
