@@ -1,0 +1,9 @@
+.venv
+.idea
+# python
+*.log
+*.pot
+*.pyc
+__pycache__
+*.py[cod]
+score.bin
